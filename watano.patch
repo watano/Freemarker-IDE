@@ -1,0 +1,119 @@
+Index: plugins/org.jboss.ide.eclipse.freemarker/.classpath
+===================================================================
+--- plugins/org.jboss.ide.eclipse.freemarker/.classpath	(revision 29189)
++++ plugins/org.jboss.ide.eclipse.freemarker/.classpath	(working copy)
+@@ -3,6 +3,6 @@
+ 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+ 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+ 	<classpathentry kind="src" path="src"/>
+-	<classpathentry exported="true" kind="lib" path="freemarker-2.3.8.jar"/>
++	<classpathentry exported="true" kind="lib" path="freemarker-2.3.16.jar"/>
+ 	<classpathentry kind="output" path="bin"/>
+ </classpath>
+Index: plugins/org.jboss.ide.eclipse.freemarker/build.properties
+===================================================================
+--- plugins/org.jboss.ide.eclipse.freemarker/build.properties	(revision 29189)
++++ plugins/org.jboss.ide.eclipse.freemarker/build.properties	(working copy)
+@@ -7,7 +7,7 @@
+                .,\
+                icons/,\
+                License.txt,\
+-               freemarker-2.3.8.jar,\
++               freemarker-2.3.16.jar,\
+                about.*,\
+                jboss_about.png
+ src.includes = src/,\
+@@ -15,4 +15,4 @@
+                icons/,\
+                META-INF/,\
+                License.txt,\
+-               freemarker-2.3.8.jar
++               freemarker-2.3.16.jar
+Index: plugins/org.jboss.ide.eclipse.freemarker/META-INF/MANIFEST.MF
+===================================================================
+--- plugins/org.jboss.ide.eclipse.freemarker/META-INF/MANIFEST.MF	(revision 29189)
++++ plugins/org.jboss.ide.eclipse.freemarker/META-INF/MANIFEST.MF	(working copy)
+@@ -22,7 +22,7 @@
+  org.jboss.tools.usage;bundle-version="1.0.0";resolution:=optional
+ Bundle-ActivationPolicy: lazy
+ Bundle-ClassPath: freemarker-ide.jar,
+- freemarker-2.3.8.jar
++ freemarker-2.3.16.jar
+ Bundle-Vendor: %providerName
+ Export-Package: freemarker.core,
+  freemarker.template,
+Index: plugins/org.jboss.ide.eclipse.freemarker/src/org/jboss/ide/eclipse/freemarker/configuration/ConfigurationManager.java
+===================================================================
+--- plugins/org.jboss.ide.eclipse.freemarker/src/org/jboss/ide/eclipse/freemarker/configuration/ConfigurationManager.java	(revision 29189)
++++ plugins/org.jboss.ide.eclipse.freemarker/src/org/jboss/ide/eclipse/freemarker/configuration/ConfigurationManager.java	(working copy)
+@@ -166,7 +166,13 @@
+                     Node n = nl.item(i);
+                     MacroLibrary macroLibrary = MacroLibrary.fromXML(project, (Element) n, getProjectClassLoader());
+                     if (null != macroLibrary) {
+-                    	map.put(macroLibrary.getNamespace(), macroLibrary);
++                    	String namespace = macroLibrary.getNamespace();
++                    	if(map.get(namespace) != null) {
++                    		for(int x =0; x<map.size(); x++) {
++                    			namespace = "_"+namespace;
++                    		}
++                    	}
++                    	map.put(namespace, macroLibrary);
+                     }
+                     
+                 } catch (Exception e) {
+Index: plugins/org.jboss.ide.eclipse.freemarker/src/org/jboss/ide/eclipse/freemarker/editor/MacroHyperlinkDetector.java
+===================================================================
+--- plugins/org.jboss.ide.eclipse.freemarker/src/org/jboss/ide/eclipse/freemarker/editor/MacroHyperlinkDetector.java	(revision 29189)
++++ plugins/org.jboss.ide.eclipse.freemarker/src/org/jboss/ide/eclipse/freemarker/editor/MacroHyperlinkDetector.java	(working copy)
+@@ -24,7 +24,6 @@
+ import java.util.Iterator;
+ import java.util.List;
+ 
+-
+ import org.eclipse.jface.text.IRegion;
+ import org.eclipse.jface.text.ITextViewer;
+ import org.eclipse.jface.text.hyperlink.IHyperlink;
+@@ -61,6 +60,22 @@
+ 						}
+ 					}
+ 				}
++				MacroLibrary[] macroLibrarys = ConfigurationManager.getInstance(editor.getProject()).getMacroLibraries();
++				if(null != macroLibrarys) {
++					for(int i=0; i<macroLibrarys.length; i++) {
++						MacroLibrary ml = macroLibrarys[i];
++						if(null != ml) {
++							for (int j=0; j<ml.getMacros().length; j++) {
++								if (ml.getMacros()[j].getName().equals(instance.getName())) {
++									// we have a match
++									return new IHyperlink[]{new MacroHyperlink(
++											instance, ml.getFile(),
++											ml.getMacros()[j].getOffset(), ml.getMacros()[j].getLength())};
++								}
++							}
++						}
++					}
++				}
+ 				if (null != macroLibrary)
+ 					return new IHyperlink[]{new MacroHyperlink(instance, macroLibrary.getFile(), -1, -1)};
+ 			}
+Index: plugins/org.jboss.ide.eclipse.freemarker/src/org/jboss/ide/eclipse/freemarker/model/MacroInstance.java
+===================================================================
+--- plugins/org.jboss.ide.eclipse.freemarker/src/org/jboss/ide/eclipse/freemarker/model/MacroInstance.java	(revision 29189)
++++ plugins/org.jboss.ide.eclipse.freemarker/src/org/jboss/ide/eclipse/freemarker/model/MacroInstance.java	(working copy)
+@@ -107,10 +107,13 @@
+ 			for (int i=0; i<libraries.length; i++) {
+ 				for (int j=0; j<libraries[i].getMacros().length; j++) {
+ 					MacroDirective macro = libraries[i].getMacros()[j];
+-					if (macro.getName().startsWith(prefix)) {
+-						l.add(getCompletionProposal(offset, subOffset,
+-								macro.getName(), contents[0]));
++					String name = macro.getName();
++					while(name.startsWith("_")) {
++						name = name.substring(1);
+ 					}
++					if (name.startsWith(prefix)) {
++						l.add(getCompletionProposal(offset, subOffset, libraries[i].getNamespace() +"."+ macro.getContents().substring(7), contents[0]));
++					}
+ 				}
+ 			}
+ 			return completionProposals(l);

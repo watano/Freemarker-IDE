@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.jboss.ide.eclipse.freemarker.editor.FreemarkerMultiPageEditor"
+            contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
+            extensions="ftl"
+            icon="icons/icon.gif"
+            id="org.jboss.ide.eclipse.freemarker.editor.FreemarkerEditor"
+            name="Freemarker Editor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.jboss.ide.eclipse.freemarker.preferences.PreferencePage"
+            id="org.jboss.ide.eclipse.freemarker.preferences.OutlinePreferencePage"
+            name="%PreferencePage_FreeMarkerEditor"/>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.consoleLineTrackers">
+      <consoleLineTracker
+            class="org.jboss.ide.eclipse.freemarker.linetracker.ConsoleLineTracker"
+            id="org.jboss.ide.eclipse.freemarker.linetracker.ConsoleLineTracker"
+            processType="java"/>
+   </extension>
+</plugin>
