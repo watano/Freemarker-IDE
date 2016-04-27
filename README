@@ -1,4 +1,4 @@
-jboss°Ñfreemarker eclipse²å¼þÊÕ±àÒÔºóÍêÈ«Ã»ÓÐÊ²Ã´¸üÐÂ. ´Ósvn logÉÏ¿´,½ö½öÖ»ÊÇ¸üÐÂÁËmavenÏà¹ØÅäÖÃÎÄ¼þ,¶øÇÒÒÑÖªµÄÁ½¸ö·Ç³£Ó°ÏìÊ¹ÓÃµÄbugÒ²²»¸üÐÂ,ÊµÔÚÊÇÌ«¶ñÐÄÁË. ÔÚËûÃÇµÄJIRAÉÏ±¨µÄbugÒ²²»fix,ÎÒ°ïËûÃÇfix,½á¹û»¹ÒªÎÒÌá¹©patch¼°Ïà¹ØµÄunit test, ËûÃÇÕû¸ö²å¼þ¾Í¼¸¸ö²âÊÔÓÃÀý,¶¼»¹ÊÇÎÞ¹Ø½ôÒªµÄÄÇÖÖ.ÊµÔÚÊÇÓôÃÆ,ËùÒÔ×Ô¼º·¢²¼Ò»¸ö,Ï²»¶µÄ¿ÉÒÔÏÂÔØ.Ö±½Ó¶ªµ½×îÐÂµÄdropinsÄ¿Â¼ÏÂ¾Í¿ÉÒÔÁË, source µÄÄÇ¸ö¿ÉÒÔ²»ÓÃ¶ª,Ö»ÊÇÔ´Âë. 
+jbossæŠŠfreemarker eclipseæ’ä»¶æ”¶ç¼–ä»¥åŽå®Œå…¨æ²¡æœ‰ä»€ä¹ˆæ›´æ–°. ä»Žsvn logä¸Šçœ‹,ä»…ä»…åªæ˜¯æ›´æ–°äº†mavenç›¸å…³é…ç½®æ–‡ä»¶,è€Œä¸”å·²çŸ¥çš„ä¸¤ä¸ªéžå¸¸å½±å“ä½¿ç”¨çš„bugä¹Ÿä¸æ›´æ–°,å®žåœ¨æ˜¯å¤ªæ¶å¿ƒäº†. åœ¨ä»–ä»¬çš„JIRAä¸ŠæŠ¥çš„bugä¹Ÿä¸fix,æˆ‘å¸®ä»–ä»¬fix,ç»“æžœè¿˜è¦æˆ‘æä¾›patchåŠç›¸å…³çš„unit test, ä»–ä»¬æ•´ä¸ªæ’ä»¶å°±å‡ ä¸ªæµ‹è¯•ç”¨ä¾‹,éƒ½è¿˜æ˜¯æ— å…³ç´§è¦çš„é‚£ç§.å®žåœ¨æ˜¯éƒé—·,æ‰€ä»¥è‡ªå·±å‘å¸ƒä¸€ä¸ª,å–œæ¬¢çš„å¯ä»¥ä¸‹è½½.ç›´æŽ¥ä¸¢åˆ°æœ€æ–°çš„dropinsç›®å½•ä¸‹å°±å¯ä»¥äº†, source çš„é‚£ä¸ªå¯ä»¥ä¸ç”¨ä¸¢,åªæ˜¯æºç . 
 
 changelog: 
 1. update to freemarker 2.3.18 
@@ -8,3 +8,5 @@ changelog:
 "Use as FreeMarker library" 
 "%PropertyPage_FreeMarkerContext" 
 5. fix bug: JBIDE 2789, JBIDE 2786, JBIDE 2787
+
+See other solutions at http://stackoverflow.com/questions/9385561/freemarker-eclipse-plug-in
